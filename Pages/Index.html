@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guest List Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+        h1 {
+            color: #333;
+        }
+        label, input, select, button {
+            font-size: 1rem;
+        }
+        input, select {
+            margin-right: 1rem;
+            padding: 0.3rem;
+        }
+        button {
+            padding: 0.3rem 0.6rem;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        .guest-item {
+            display: flex;
+            justify-content: space-between;
+            max-width: 500px;
+        }
+        .remove-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+        }
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guest List Application</h1>
+
+    <form id="guestForm">
+        <label for="guestName">Enter guest name:</label>
+        <input type="text" id="guestName" name="guestName" required />
+
+        <label for="activitySelect">Select activity:</label>
+        <select id="activitySelect" name="activitySelect" required>
+            <option value="" disabled selected>Select an activity</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Seminar">Seminar</option>
+            <option value="Networking">Networking</option>
+        </select>
+
+        <button type="submit">Add Guest</button>
+    </form>
+
+    <h2>Registered Guests</h2>
+    <ul id="guestList"></ul>
+
+    <script>
+        let guests = [];
+
+        function leggTil(name, activity) {
+            guests.push({ name, activity });
+            visListe();
+        }
+
+        function visListe() {
+            const listElement = document.getElementById('guestList');
+            listElement.innerHTML = '';
+
+            guests.forEach((guest, index) => {
+                const li = document.createElement('li');
+                li.className = 'guest-item';
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = `${guest.name} - Registered for: ${guest.activity}`;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.className = 'remove-btn';
+                removeBtn.onclick = () => fjernPerson(index);
+
+                li.appendChild(nameSpan);
+                li.appendChild(removeBtn);
+                listElement.appendChild(li);
+            });
+        }
+
+        function fjernPerson(index) {
+            guests.splice(index, 1);
+            visListe();
+        }
+
+        document.getElementById('guestForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const guestNameInput = document.getElementById('guestName');
+            const activitySelect = document.getElementById('activitySelect');
+            const name = guestNameInput.value.trim();
+            const activity = activitySelect.value;
+            if (name && activity) {
+                leggTil(name, activity);
+                guestNameInput.value = '';
+                activitySelect.value = '';
+                guestNameInput.focus();
+            }
+        });
+
+        visListe();
+    </script>
+</body>
+</html>
